@@ -1,19 +1,29 @@
-# -*- coding: utf-8 -*-
-
-# from odoo import models, fields, api
+from odoo import models, fields, api
 
 
-# class easy-gym(models.Model):
-#     _name = 'easy-gym.easy-gym'
-#     _description = 'easy-gym.easy-gym'
+class gym_exercises(models.Model):
+    _name = 'easy-gym.exercises'
+    _description = 'General and default exercises for all users '
+    name = fields.Char()
+    image = fields.Image()
 
-#     name = fields.Char()
-#     value = fields.Integer()
-#     value2 = fields.Float(compute="_value_pc", store=True)
-#     description = fields.Text()
-#
-#     @api.depends('value')
-#     def _value_pc(self):
-#         for record in self:
-#             record.value2 = float(record.value) / 100
+class gym_custom_exercises(models.Model):
+    _name = 'easy-gym.custom_exercises'
+    _description = 'Exercises created per user '
+    name = fields.Char()
+    image = fields.Image(required=False)
 
+class gym_custom_routines(models.Model):
+    _name = 'easy-gym.custom_routines'
+    _description = 'Exercises created per user '
+    name = fields.Char()
+
+class gym_exercises_record(models.Model):
+    _name = 'easy-gym.custom_routines'
+    _description = 'Exercises created per user '
+    name = fields.Char()
+
+class gym_routines_record(models.Model):
+    _name = 'easy-gym.custom_routines'
+    _description = 'Exercises created per user '
+    name = fields.Char()
