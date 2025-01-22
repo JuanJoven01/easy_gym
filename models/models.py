@@ -4,8 +4,9 @@ import base64
 class Exercises(models.Model):
     _name = 'easy_gym.exercises'
     _description = 'General and default exercises for all users '
-    name = fields.Char()
-    image = fields.Image()
+    name = fields.Char(translate=True)
+    
+    image = fields.Image(required=False)
 
     # @api.model
     # def init(self):
