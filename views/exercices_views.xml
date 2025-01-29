@@ -1,0 +1,50 @@
+<odoo>
+    <record id="view_easy_gym_exercises_form" model="ir.ui.view">
+        <field name="name">easy_gym.exercises.form</field>
+        <field name="model">easy_gym.exercises</field>
+        <field name="arch" type="xml">
+            <form string="Exercise">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="focus_area"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_easy_gym_exercises_tree" model="ir.ui.view">
+        <field name="name">easy_gym.exercises.tree</field>
+        <field name="model">easy_gym.exercises</field>
+        <field name="arch" type="xml">
+            <tree string="Exercises">
+                <field name="name"/>
+                <field name="focus_area"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_easy_gym_exercises_search" model="ir.ui.view">
+        <field name="name">easy_gym.exercises.search</field>
+        <field name="model">easy_gym.exercises</field>
+        <field name="arch" type="xml">
+            <search string="Search Exercises">
+                <field name="name"/>
+                <field name="focus_area"/>
+            </search>
+        </field>
+    </record>
+
+    <menuitem id="menu_easy_gym_root" name="Easy Gym" sequence="1"/>
+
+    <menuitem id="menu_easy_gym_exercises" name="Exercises"
+        parent="menu_easy_gym_root" sequence="2"
+        action="action_easy_gym_exercises"/>
+
+    <record id="action_easy_gym_exercises" model="ir.actions.act_window">
+        <field name="name">Exercises</field>
+        <field name="res_model">easy_gym.exercises</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
