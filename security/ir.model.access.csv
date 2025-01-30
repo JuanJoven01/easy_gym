@@ -1,5 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_easy_gym_exercises,easy_gym.exercises,model_easy_gym_exercises,base.group_user,1,1,1,1
+access_easy_gym_focus_area,easy_gym.focus_area,model_easy_gym_focus_area,base.group_user,1,1,1,1
 access_easy_gym_custom_exercises,easy_gym.custom_exercises,model_easy_gym_custom_exercises,base.group_user,1,1,1,1
 access_easy_gym_custom_routines,easy_gym.custom_routines,model_easy_gym_custom_routines,base.group_user,1,1,1,1
 access_easy_gym_exercises_records,easy_gym.exercises_records,model_easy_gym_exercises_records,base.group_user,1,1,1,1

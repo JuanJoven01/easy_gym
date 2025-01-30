@@ -1,17 +1,36 @@
+import base64
 from odoo import models, fields, api
+
+
+class ExerciseFocusArea(models.Model):
+    _name = 'easy_gym.focus_area'
+    _description = 'Exercise Focus Areas'
+    name = fields.Char(required=True, translate=True, string='Focus Area Name')
+    image = fields.Image(required=False)
 
 class Exercises(models.Model):
     _name = 'easy_gym.exercises'
     _description = 'General and default exercises for all users'
     
     name = fields.Char(translate=True, string='Exercise Name')
-    focus_area = fields.Char(required=True, string='Main Area Worked', translate=True)
+    focus_area_id = fields.Many2one('easy_gym.focus_area', string='Main Area Worked', required=True)
+    image = fields.Image(required=False)
 
     @api.model
     def init(self):
         """
-        Create default exercises when the module is installed or updated.
+        Create default focus areas and exercises when the module is installed or updated.
         """
+        # Define the focus areas
+        default_focus_areas = ['Chest', 'Back', 'Shoulders', 'Biceps', 'Triceps', 'Abdominals', 'Legs', 'Calves']
+        
+        focus_area_map = {}
+        for area in default_focus_areas:
+            focus_area = self.env['easy_gym.focus_area'].search([('name', '=', area)], limit=1)
+            if not focus_area:
+                focus_area = self.env['easy_gym.focus_area'].create({'name': area})
+            focus_area_map[area] = focus_area.id
+
         default_exercises = [
             # Chest
             {'name': 'Barbell Bench Press', 'focus_area': 'Chest'},
@@ -75,7 +94,10 @@ class Exercises(models.Model):
 
         for exercise in default_exercises:
             if not self.env['easy_gym.exercises'].search([('name', '=', exercise['name'])]):
-                self.create(exercise)
+                self.create({
+                    'name': exercise['name'],
+                    'focus_area_id': focus_area_map[exercise['focus_area']]
+                })
 
 
 class CustomExercises(models.Model):

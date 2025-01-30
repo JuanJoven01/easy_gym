@@ -1,0 +1,3 @@
+<odoo>
+    <menuitem id="menu_easy_gym_root" name="Easy Gym" sequence="1"/>
+</odoo>
