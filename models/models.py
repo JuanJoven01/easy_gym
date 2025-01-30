@@ -104,8 +104,9 @@ class CustomExercises(models.Model):
     _name = 'easy_gym.custom_exercises'
     _description = 'Exercises created per user '
     name = fields.Char()
-    focus_area = fields.Char(required=True)
+    focus_area_id = fields.Many2one('easy_gym.focus_area', string='Main Area Worked', required=True)
     image = fields.Image(required=False)
+    
     
 class CustomRoutines(models.Model):
     _name = 'easy_gym.custom_routines'
