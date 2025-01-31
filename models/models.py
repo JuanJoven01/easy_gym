@@ -1,5 +1,6 @@
 import base64
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 
 class ExerciseFocusArea(models.Model):
@@ -106,22 +107,48 @@ class CustomExercises(models.Model):
     name = fields.Char()
     focus_area_id = fields.Many2one('easy_gym.focus_area', string='Main Area Worked', required=True)
     image = fields.Image(required=False)
-    
+
     
 class CustomRoutines(models.Model):
     _name = 'easy_gym.custom_routines'
-    _description = 'Exercises created per user '
-    name = fields.Char()
+    _description = 'Custom routines created per user'
+
+    name = fields.Char(required=True, string='Routine Name')
+    user_id = fields.Many2one('res.users', string='User', required=True)
+    routine_exercise_ids = fields.One2many('easy_gym.routine_exercise', 'routine_id', string='Exercises with order and series')
+
+class RoutineExercise(models.Model):
+    _name = 'easy_gym.routine_exercise'
+    _description = 'Exercises included in a routine with order and sequence'
+
+    routine_id = fields.Many2one('easy_gym.custom_routines', string='Routine', required=True, ondelete='cascade')
+    exercise_id = fields.Many2one('easy_gym.exercises', string='Exercise', required=False, ondelete='cascade')
+    custom_exercise_id = fields.Many2one('easy_gym.custom_exercises', string='Exercise', required=False, ondelete='cascade')
+    order = fields.Integer(string='Order')  # Order of exercises in the routine
+    superserie_group = fields.Integer(string='Superserie Group', default=0)  # Group exercises together in superseries
 
 class ExercisesRecords(models.Model):
     _name = 'easy_gym.exercises_records'
-    _description = 'Exercises created per user '
-    name = fields.Char()
+    _description = 'Records of exercises performed by users'
+
+    user_id = fields.Many2one('res.users', string='User', required=True)
+    routine_exercise_id = fields.Many2one('easy_gym.routine_exercise', string='Routine Exercise', required=True)
+    routine_record_id = fields.Many2one('easy_gym.routines_records', string='Routine Record', ondelete='cascade')
+    date = fields.Date(string='Date', default=fields.Date.today)
+    repetitions = fields.Integer(string='Repetitions')
+    weight = fields.Float(string='Weight (kg)')
+    duration = fields.Float(string='Duration (min)')
 
 class RoutinesRecords(models.Model):
     _name = 'easy_gym.routines_records'
-    _description = 'Exercises created per user '
-    name = fields.Char()
+    _description = 'Records of routines performed by users'
+
+    user_id = fields.Many2one('res.users', string='User', required=True)
+    routine_id = fields.Many2one('easy_gym.custom_routines', string='Routine', required=True)
+    exercise_records_ids = fields.One2many('easy_gym.exercises_records', 'routine_record_id', string='Exercise Records')
+    date = fields.Date(string='Date', default=fields.Date.today)
+    notes = fields.Text(string='Notes')
+    duration = fields.Float(string='Duration (min)')
 
 def load_image_as_base64(image_path):
     """
