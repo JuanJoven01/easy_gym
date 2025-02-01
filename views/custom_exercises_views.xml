@@ -1,0 +1,55 @@
+<odoo>
+    <!-- ✅ Form View for Custom Exercises -->
+    <record id="view_easy_gym_custom_exercises_form" model="ir.ui.view">
+        <field name="name">easy_gym.custom_exercises.form</field>
+        <field name="model">easy_gym.custom_exercises</field>
+        <field name="arch" type="xml">
+            <form string="Custom Exercise">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="focus_area_id"/>
+                        <field name="image"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ✅ List View for Custom Exercises -->
+    <record id="view_easy_gym_custom_exercises_list" model="ir.ui.view">
+        <field name="name">easy_gym.custom_exercises.list</field>
+        <field name="model">easy_gym.custom_exercises</field>
+        <field name="arch" type="xml">
+            <list string="Custom Exercises">
+                <field name="name"/>
+                <field name="focus_area_id"/>
+                <field name="image"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ✅ Search View for Custom Exercises -->
+    <record id="view_easy_gym_custom_exercises_search" model="ir.ui.view">
+        <field name="name">easy_gym.custom_exercises.search</field>
+        <field name="model">easy_gym.custom_exercises</field>
+        <field name="arch" type="xml">
+            <search string="Search Custom Exercises">
+                <field name="name"/>
+                <field name="focus_area_id"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ✅ Window Action for Custom Exercises -->
+    <record id="action_easy_gym_custom_exercises" model="ir.actions.act_window">
+        <field name="name">Custom Exercises</field>
+        <field name="res_model">easy_gym.custom_exercises</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ✅ Menu Item for Custom Exercises -->
+    <menuitem id="menu_easy_gym_custom_exercises" name="Custom Exercises"
+        parent="menu_easy_gym_root" sequence="5"
+        action="action_easy_gym_custom_exercises"/>
+</odoo>

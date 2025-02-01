@@ -1,0 +1,54 @@
+<odoo>
+    <!-- ✅ Form View for Custom Routines -->
+    <record id="view_easy_gym_custom_routines_form" model="ir.ui.view">
+        <field name="name">easy_gym.custom_routines.form</field>
+        <field name="model">easy_gym.custom_routines</field>
+        <field name="arch" type="xml">
+            <form string="Custom Routine">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="user_id"/>
+                        <field name="routine_exercise_ids" widget="one2many_list"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ✅ List View for Custom Routines -->
+    <record id="view_easy_gym_custom_routines_list" model="ir.ui.view">
+        <field name="name">easy_gym.custom_routines.list</field>
+        <field name="model">easy_gym.custom_routines</field>
+        <field name="arch" type="xml">
+            <list string="Custom Routines">
+                <field name="name"/>
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ✅ Search View for Custom Routines -->
+    <record id="view_easy_gym_custom_routines_search" model="ir.ui.view">
+        <field name="name">easy_gym.custom_routines.search</field>
+        <field name="model">easy_gym.custom_routines</field>
+        <field name="arch" type="xml">
+            <search string="Search Custom Routines">
+                <field name="name"/>
+                <field name="user_id"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ✅ Window Action for Custom Routines -->
+    <record id="action_easy_gym_custom_routines" model="ir.actions.act_window">
+        <field name="name">Custom Routines</field>
+        <field name="res_model">easy_gym.custom_routines</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ✅ Menu Item for Custom Routines -->
+    <menuitem id="menu_easy_gym_custom_routines" name="Custom Routines"
+        parent="menu_easy_gym_root" sequence="4"
+        action="action_easy_gym_custom_routines"/>
+</odoo>

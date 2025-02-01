@@ -1,0 +1,60 @@
+<odoo>
+    <!-- ✅ Form View for Routine Exercises -->
+    <record id="view_easy_gym_routine_exercise_form" model="ir.ui.view">
+        <field name="name">easy_gym.routine_exercise.form</field>
+        <field name="model">easy_gym.routine_exercise</field>
+        <field name="arch" type="xml">
+            <form string="Routine Exercise">
+                <sheet>
+                    <group>
+                        <field name="routine_id"/>
+                        <field name="exercise_id"/>
+                        <field name="custom_exercise_id"/>
+                        <field name="order"/>
+                        <field name="superserie_group"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ✅ List View for Routine Exercises -->
+    <record id="view_easy_gym_routine_exercise_list" model="ir.ui.view">
+        <field name="name">easy_gym.routine_exercise.list</field>
+        <field name="model">easy_gym.routine_exercise</field>
+        <field name="arch" type="xml">
+            <list string="Routine Exercises">
+                <field name="routine_id"/>
+                <field name="exercise_id"/>
+                <field name="custom_exercise_id"/>
+                <field name="order"/>
+                <field name="superserie_group"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ✅ Search View for Routine Exercises -->
+    <record id="view_easy_gym_routine_exercise_search" model="ir.ui.view">
+        <field name="name">easy_gym.routine_exercise.search</field>
+        <field name="model">easy_gym.routine_exercise</field>
+        <field name="arch" type="xml">
+            <search string="Search Routine Exercises">
+                <field name="routine_id"/>
+                <field name="exercise_id"/>
+                <field name="custom_exercise_id"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ✅ Window Action for Routine Exercises -->
+    <record id="action_easy_gym_routine_exercise" model="ir.actions.act_window">
+        <field name="name">Routine Exercises</field>
+        <field name="res_model">easy_gym.routine_exercise</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_easy_gym_routine_exercise" name="Routines Exercises"
+        parent="menu_easy_gym_root" sequence="6"
+        action="action_easy_gym_routine_exercise"/>
+</odoo>

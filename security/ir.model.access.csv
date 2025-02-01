@@ -5,3 +5,4 @@ access_easy_gym_custom_exercises,easy_gym.custom_exercises,model_easy_gym_custom
 access_easy_gym_custom_routines,easy_gym.custom_routines,model_easy_gym_custom_routines,base.group_user,1,1,1,1
 access_easy_gym_exercises_records,easy_gym.exercises_records,model_easy_gym_exercises_records,base.group_user,1,1,1,1
 access_easy_gym_routines_records,easy_gym.routines_records,model_easy_gym_routines_records,base.group_user,1,1,1,1
+access_easy_gym_routine_exercise,easy_gym.routine_exercise,model_easy_gym_routine_exercise,base.group_user,1,1,1,1

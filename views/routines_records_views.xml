@@ -1,0 +1,48 @@
+<odoo>
+    <!-- ✅ Form View for Routines Records -->
+    <record id="view_easy_gym_routines_records_form" model="ir.ui.view">
+        <field name="name">easy_gym.routines_records.form</field>
+        <field name="model">easy_gym.routines_records</field>
+        <field name="arch" type="xml">
+            <form string="Routine Record">
+                <sheet>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="routine_id"/>
+                        <field name="exercise_records_ids" widget="one2many_list"/>
+                        <field name="date"/>
+                        <field name="duration"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ✅ List View for Routines Records -->
+    <record id="view_easy_gym_routines_records_list" model="ir.ui.view">
+        <field name="name">easy_gym.routines_records.list</field>
+        <field name="model">easy_gym.routines_records</field>
+        <field name="arch" type="xml">
+            <list string="Routine Records">
+                <field name="user_id"/>
+                <field name="routine_id"/>
+                <field name="date"/>
+                <field name="duration"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ✅ Window Action for Routines Records (Faltaba) -->
+    <record id="action_easy_gym_routines_records" model="ir.actions.act_window">
+        <field name="name">Routines Records</field>
+        <field name="res_model">easy_gym.routines_records</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ✅ Menu Item for Routines Records -->
+    <menuitem id="menu_easy_gym_routines_records" name="Routines Records"
+        parent="menu_easy_gym_root" sequence="7"
+        action="action_easy_gym_routines_records"/>
+
+</odoo>

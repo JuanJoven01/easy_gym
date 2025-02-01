@@ -26,6 +26,13 @@ Long description of module's purpose
         'views/menus.xml',
         'views/focus_area_views.xml',
         'views/exercises_views.xml',
+        'views/custom_routines_views.xml',
+        'views/custom_exercises_views.xml',
+        'views/exercises_records_views.xml', # Since here now saw
+        'views/routine_exercises_views.xml',
+        'views/routines_records_views.xml',
+        
+        
     ],
     # only loaded in demonstration mode
     'demo': [
