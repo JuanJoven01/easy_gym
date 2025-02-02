@@ -137,6 +137,7 @@ class ExercisesRecords(models.Model):
     routine_record_id = fields.Many2one('easy_gym.routines_records', string='Routine Record', ondelete='cascade')
     date = fields.Date(string='Date', default=fields.Date.today)
     repetitions = fields.Integer(string='Repetitions')
+    series = fields.Integer(string='Series')
     weight = fields.Float(string='Weight (kg)')
     duration = fields.Float(string='Duration (min)')
 

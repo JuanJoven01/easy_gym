@@ -12,6 +12,7 @@
                         <field name="routine_record_id"/>
                         <field name="date"/>
                         <field name="repetitions"/>
+                        <field name="series"/>
                         <field name="weight"/>
                         <field name="duration"/>
                     </group>
@@ -30,6 +31,7 @@
                 <field name="routine_exercise_id"/>
                 <field name="date"/>
                 <field name="repetitions"/>
+                <field name="series"/>
                 <field name="weight"/>
             </list>
         </field>
