@@ -3,7 +3,7 @@ from odoo import http
 from odoo.http import request
 from odoo.exceptions import AccessDenied, ValidationError
 from .auth import JWTAuth
-from ._helpers import _success_response, _error_response
+from ._helpers import _success_response, _error_response, _http_success_response, _http_error_response
 
 _logger = logging.getLogger(__name__)
 
@@ -37,15 +37,18 @@ class CustomExercisesController(http.Controller):
             _logger.error(f"Error creating custom exercise: {str(e)}")
             return _error_response("Internal Server Error", 500)
 
-    @http.route('/api/easy_apps/gym/custom_exercises', type='jsonrpc', auth="none", methods=['GET'])
+    @http.route('/api/easy_apps/gym/custom_exercises', type='http', auth="none", methods=['GET'], csrf=False)
     def get_custom_exercises(self, **kwargs):
         """Retrieve all custom exercises for the authenticated user"""
         try:
-            user = JWTAuth.authenticate_request()  # Authenticate user
+            #  Authenticate user using JWT
+            user = JWTAuth.authenticate_request()
             user_id = user.get('user_id')
 
+            #  Fetch custom exercises for the user
             custom_exercises = request.env['easy_gym.custom_exercises'].sudo().search([('user_id', '=', user_id)])
 
+            #  Format response data
             exercises_list = [{
                 'id': e.id,
                 'name': e.name,
@@ -53,26 +56,31 @@ class CustomExercisesController(http.Controller):
                 'image': f"data:image/png;base64,{e.image.decode('utf-8')}" if e.image else None
             } for e in custom_exercises]
 
-            return _success_response(exercises_list, "Custom exercises retrieved successfully")
+            return _http_success_response(exercises_list, "Custom exercises retrieved successfully", 200)
 
         except AccessDenied as e:
-            return _error_response(str(e), 401)
+            return _http_error_response(str(e), 401)
         except Exception as e:
             _logger.error(f"Error retrieving custom exercises: {str(e)}")
-            return _error_response("Internal Server Error", 500)
+            return _http_error_response("Internal Server Error", 500)
 
-    @http.route('/api/easy_apps/gym/custom_exercises/<int:exercise_id>', type='jsonrpc', auth="none", methods=['GET'])
+    
+    @http.route('/api/easy_apps/gym/custom_exercises/<int:exercise_id>', type='http', auth="none", methods=['GET'], csrf=False)
     def get_custom_exercise(self, exercise_id, **kwargs):
         """Retrieve a specific custom exercise by ID for the authenticated user"""
         try:
-            user = JWTAuth.authenticate_request()  # Authenticate user
+            #  Authenticate user using JWT
+            user = JWTAuth.authenticate_request()
             user_id = user.get('user_id')
 
+            #  Fetch custom exercise
             custom_exercise = request.env['easy_gym.custom_exercises'].sudo().browse(exercise_id)
 
+            #  Validate if the custom exercise exists and belongs to the user
             if not custom_exercise.exists() or custom_exercise.user_id.id != user_id:
-                return _error_response("Custom exercise not found or unauthorized", 404)
+                return _http_error_response("Custom exercise not found or unauthorized", 404)
 
+            #  Format response data
             exercise_data = {
                 'id': custom_exercise.id,
                 'name': custom_exercise.name,
@@ -80,13 +88,14 @@ class CustomExercisesController(http.Controller):
                 'image': f"data:image/png;base64,{custom_exercise.image.decode('utf-8')}" if custom_exercise.image else None
             }
 
-            return _success_response(exercise_data, "Custom exercise retrieved successfully")
+            return _http_success_response(exercise_data, "Custom exercise retrieved successfully", 200)
 
         except AccessDenied as e:
-            return _error_response(str(e), 401)
+            return _http_error_response(str(e), 401)
         except Exception as e:
             _logger.error(f"Error retrieving custom exercise: {str(e)}")
-            return _error_response("Internal Server Error", 500)
+            return _http_error_response("Internal Server Error", 500)
+
 
     @http.route('/api/easy_apps/gym/custom_exercises/<int:exercise_id>', type='jsonrpc', auth="none", methods=['PUT'])
     def update_custom_exercise(self, exercise_id, **kwargs):
