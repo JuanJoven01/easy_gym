@@ -7,6 +7,7 @@
             <form string="Custom Exercise">
                 <sheet>
                     <group>
+                        <field name="user_id"/>
                         <field name="name"/>
                         <field name="focus_area_id"/>
                         <field name="image"/>
@@ -22,6 +23,7 @@
         <field name="model">easy_gym.custom_exercises</field>
         <field name="arch" type="xml">
             <list string="Custom Exercises">
+                <field name="user_id"/>
                 <field name="name"/>
                 <field name="focus_area_id"/>
                 <field name="image"/>

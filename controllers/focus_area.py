@@ -1,8 +1,8 @@
 import logging
 from odoo import http
 from odoo.http import request, Response
-from auth import JWTAuth
-from _helpers import _success_response, _error_response
+from .auth import JWTAuth
+from ._helpers import _success_response, _error_response
 from odoo.exceptions import AccessDenied
 
 # _logger = logging.getLogger(__name__)
