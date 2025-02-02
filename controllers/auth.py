@@ -20,7 +20,7 @@ class JWTAuth:
         payload = {
             'user_id': user.id,
             'login': user.login,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=2)
+            'exp': datetime.now(datetime.timezone.utc) + datetime.timedelta(days=7)
         }
         return jwt.encode(payload, JWTAuth.get_secret_key(), algorithm='HS256')
 

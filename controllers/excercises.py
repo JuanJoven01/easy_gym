@@ -11,7 +11,7 @@ class ExercisesController(http.Controller):
     def get_exercises(self, **kwargs):
         """Retrieve a list of exercises"""
         try:
-            JWTAuth.authenticate()  # Verify JWT authentication
+            JWTAuth.authenticate_request()  # Verify JWT authentication
 
             exercises = request.env['easy_gym.exercises'].sudo().search([])
 

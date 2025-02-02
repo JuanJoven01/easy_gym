@@ -11,7 +11,7 @@ class FocusAreaController(http.Controller):
     def get_focus_areas(self, **kwargs):
         """Retrieve a list of focus areas"""
         try:
-            JWTAuth.authenticate()  # Verify JWT authentication
+            JWTAuth.authenticate_request()  # Verify JWT authentication
 
             focus_areas = request.env['easy_gym.focus_area'].sudo().search([])
 
