@@ -3,6 +3,8 @@ from odoo import http
 from odoo.http import request, Response
 from auth import JWTAuth
 from _helpers import _success_response, _error_response
+from odoo.exceptions import AccessDenied
+
 # _logger = logging.getLogger(__name__)
 
 class FocusAreaController(http.Controller):
@@ -23,5 +25,7 @@ class FocusAreaController(http.Controller):
 
             return _success_response(focus_area_list, "Focus areas retrieved successfully")
 
+        except AccessDenied as e:
+            return _error_response(str(e), 401)  # Unauthorized
         except Exception as e:
             return _error_response(str(e), 500)

@@ -3,6 +3,7 @@ import datetime
 import logging
 from odoo import http
 from odoo.http import request, Response
+from odoo.exceptions import AccessDenied
 
 # _logger = logging.getLogger(__name__)
 
@@ -38,10 +39,18 @@ class JWTAuth:
     def authenticate_request():
         """Middleware to verify JWT token in protected endpoints"""
         token = request.httprequest.headers.get('Authorization')
+
         if not token or not token.startswith('Bearer '):
-            return {'error': 'Missing or invalid token'}
-        token = token.split(' ')[1]
-        return JWTAuth.decode_token(token)
+            raise AccessDenied("Missing or invalid token")  # More specific exception
+
+        token = token.split(' ')[1]  # Extract actual token
+
+        decoded_token = JWTAuth.decode_token(token)
+
+        if not decoded_token:
+            raise AccessDenied("Invalid or expired token")  # More specific exception
+
+        return decoded_token
 
 
 class JWTAuthController(http.Controller):

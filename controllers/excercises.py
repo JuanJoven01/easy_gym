@@ -3,6 +3,7 @@ from odoo import http
 from odoo.http import request, Response
 from auth import JWTAuth
 from _helpers import _success_response, _error_response
+from odoo.exceptions import AccessDenied
 # _logger = logging.getLogger(__name__)
 
 class ExercisesController(http.Controller):
@@ -11,8 +12,8 @@ class ExercisesController(http.Controller):
     def get_exercises(self, **kwargs):
         """Retrieve a list of exercises"""
         try:
-            JWTAuth.authenticate_request()  # Verify JWT authentication
-
+            jwt_body = JWTAuth.authenticate_request()  # Verify JWT authentication
+            if jwt_body['error']: return _error_response(jwt_body['error'], 401)
             exercises = request.env['easy_gym.exercises'].sudo().search([])
 
             exercise_list = [{
@@ -23,6 +24,8 @@ class ExercisesController(http.Controller):
             } for e in exercises]
 
             return _success_response(exercise_list, "Exercises retrieved successfully")
-
+        
+        except AccessDenied as e:
+            return _error_response(str(e), 401)  # Unauthorized
         except Exception as e:
             return _error_response(str(e), 500)
