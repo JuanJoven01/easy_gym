@@ -5,10 +5,6 @@ from odoo import http
 from odoo.http import request, Response
 
 # _logger = logging.getLogger(__name__)
-from odoo import http
-from odoo.http import request
-import jwt
-import datetime
 
 class JWTAuth:
     """Middleware for handling JWT authentication"""
