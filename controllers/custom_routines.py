@@ -3,7 +3,7 @@ from odoo import http
 from odoo.http import request
 from odoo.exceptions import AccessDenied, ValidationError
 from .auth import JWTAuth
-from ._helpers import _success_response, _error_response
+from ._helpers import _success_response, _error_response, _http_error_response, _http_success_response
 
 _logger = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ class CustomRoutinesController(http.Controller):
             return _error_response("Internal Server Error", 500)
 
 
-    @http.route('/api/easy_apps/gym/custom_routines', type='jsonrpc', auth="none", methods=['GET'])
+    @http.route('/api/easy_apps/gym/custom_routines', type='http', auth="none", methods=['GET'])
     def get_custom_routines(self, **kwargs):
         """Retrieve all custom routines for the authenticated user"""
         try:
@@ -105,33 +105,40 @@ class CustomRoutinesController(http.Controller):
             return _error_response("Internal Server Error", 500)
 
 
-    @http.route('/api/easy_apps/gym/custom_routines/get_exercises/<int:routine_id>', type='jsonrpc', auth="none", methods=['GET'])
+    @http.route('/api/easy_apps/gym/custom_routines/get_exercises/<int:routine_id>', type='http', auth="none", methods=['GET'], csrf=False)
     def get_exercises_per_routine(self, routine_id, **kwargs):
-        """Retrieve all exercises per custom routines for the authenticated user"""
+        """Retrieve all exercises for a given custom routine (protected with JWT)"""
         try:
+            #  Authenticate user using JWT
             user = JWTAuth.authenticate_request()
-            user_id = user.get('user_id')
+            user_id = user.get('user_id')  # Extract from decoded JWT
+
+            #  Validate if routine exists and belongs to the user
             routine_info = request.env['easy_gym.custom_routines'].sudo().search([('id', '=', routine_id)], limit=1)
-            #validate of routine belongs to user
             if not routine_info:
-                raise AccessDenied('Routine does not exist')
+                return _http_error_response('Routine does not exist', 404)
             if routine_info.user_id.id != user_id:
-                raise AccessDenied('Routine does not belong to the user')
-            
+                return _http_error_response('Routine does not belong to the user', 403)
+
+            #  Retrieve all exercises related to the routine
             exercises = [{
-                'routine_id' : exercise.get['routine_id'],
-                'exercise_id' : exercise.get['exercise_id'],
-                'custom_exercise_id' : exercise.get['custom_exercise_id'],
-                'order' : exercise.get['order'],
-                'superserie_group' : exercise.get['superserie_group'],
+                'id': exercise.id,
+                'routine_id': exercise.routine_id.id,
+                'exercise_id': exercise.exercise_id.id if exercise.exercise_id else None,
+                'custom_exercise_id': exercise.custom_exercise_id.id if exercise.custom_exercise_id else None,
+                'order': exercise.order,
+                'superserie_group': exercise.superserie_group,
             } for exercise in routine_info.routine_exercise_ids]
-            return _success_response(exercises, "Custom routines retrieved successfully")
+
+            #  Return HTTP JSON success response
+            return _http_success_response(exercises, "Exercises retrieved successfully", 200)
 
         except AccessDenied as e:
-            return _error_response(str(e), 401)
+            return _http_error_response(str(e), 401)
+
         except Exception as e:
             _logger.error(f"Error retrieving custom routines: {str(e)}")
-            return _error_response("Internal Server Error", 500)
+            return _http_error_response("Internal Server Error", 500)
 
 
     # @http.route('/api/easy_apps/gym/custom_routines/<int:routine_id>', type='jsonrpc', auth="none", methods=['PUT'])
