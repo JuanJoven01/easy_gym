@@ -42,7 +42,7 @@ class CustomRoutinesController(http.Controller):
             if not exercises:
                 raise ValidationError("Exercises are required")
             # Validate if the routine belongs to the user
-            user_id = user.get('id')
+            user_id = user.get('user_id')
             routine_ids = list(set(exercise.get('routine_id') for exercise in exercises if exercise.get('routine_id')))
             if len(routine_ids) > 1:
                 raise AccessDenied('All exercises must belong to the same routine')
@@ -90,10 +90,6 @@ class CustomRoutinesController(http.Controller):
             user_id = user.get('user_id')
 
             custom_routines = request.env['easy_gym.custom_routines'].sudo().search([('user_id', '=', user_id)])
-            if not custom_routines:
-                raise AccessDenied('Routine does not exist')
-            if custom_routines.user_id.id != user_id:
-                raise AccessDenied('Routine does not belong to the user')
             routine_list = [{
                 'id': r.id,
                 'name': r.name,
@@ -109,28 +105,33 @@ class CustomRoutinesController(http.Controller):
             return _error_response("Internal Server Error", 500)
 
 
-    # @http.route('/api/easy_apps/gym/custom_routines/get_exercises/<int:routine_id>', type='jsonrpc', auth="none", methods=['GET'])
-    # def get_exercises_per_routine(self, routine_id, **kwargs):
-    #     """Retrieve all exercises per custom routines for the authenticated user"""
-    #     try:
-    #         user = JWTAuth.authenticate_request()
-    #         user_id = user.get('user_id')
+    @http.route('/api/easy_apps/gym/custom_routines/get_exercises/<int:routine_id>', type='jsonrpc', auth="none", methods=['GET'])
+    def get_exercises_per_routine(self, routine_id, **kwargs):
+        """Retrieve all exercises per custom routines for the authenticated user"""
+        try:
+            user = JWTAuth.authenticate_request()
+            user_id = user.get('user_id')
+            routine_info = request.env['easy_gym.custom_routines'].sudo().search([('id', '=', routine_id)], limit=1)
+            #validate of routine belongs to user
+            if not routine_info:
+                raise AccessDenied('Routine does not exist')
+            if routine_info.user_id.id != user_id:
+                raise AccessDenied('Routine does not belong to the user')
+            
+            exercises = [{
+                'routine_id' : exercise.get['routine_id'],
+                'exercise_id' : exercise.get['exercise_id'],
+                'custom_exercise_id' : exercise.get['custom_exercise_id'],
+                'order' : exercise.get['order'],
+                'superserie_group' : exercise.get['superserie_group'],
+            } for exercise in routine_info.routine_exercise_ids]
+            return _success_response(exercises, "Custom routines retrieved successfully")
 
-    #         custom_exercises = request.env['easy_gym.routine_exercise'].sudo().search([('routine_id', '=', routine_id)])
-
-    #         routine_list = [{
-    #             'id': r.id,
-    #             'name': r.name,
-    #             'routine_exercise_ids': [e.id for e in r.routine_exercise_ids]
-    #         } for r in custom_routines]
-
-    #         return _success_response(routine_list, "Custom routines retrieved successfully")
-
-    #     except AccessDenied as e:
-    #         return _error_response(str(e), 401)
-    #     except Exception as e:
-    #         _logger.error(f"Error retrieving custom routines: {str(e)}")
-    #         return _error_response("Internal Server Error", 500)
+        except AccessDenied as e:
+            return _error_response(str(e), 401)
+        except Exception as e:
+            _logger.error(f"Error retrieving custom routines: {str(e)}")
+            return _error_response("Internal Server Error", 500)
 
 
     # @http.route('/api/easy_apps/gym/custom_routines/<int:routine_id>', type='jsonrpc', auth="none", methods=['PUT'])
