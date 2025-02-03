@@ -206,24 +206,46 @@ class CustomRoutinesController(http.Controller):
             _logger.error(f"Error updating routine: {str(e)}")
             return _error_response("Internal Server Error", 500)
 
-    # @http.route('/api/easy_apps/gym/custom_routines/<int:routine_id>', type='jsonrpc', auth="none", methods=['DELETE'])
-    # def delete_custom_routine(self, routine_id, **kwargs):
-    #     """Delete a custom routine"""
-    #     try:
-    #         user = JWTAuth.authenticate_request()
-    #         user_id = user.get('user_id')
+    @http.route('/api/easy_apps/gym/custom_routines/delete/<int:routine_id>', type='http', auth="none", methods=['DELETE'])
+    def delete_custom_routine(self, routine_id, **kwargs):
+        """Delete a custom routine"""
+        try:
+            user = JWTAuth.authenticate_request()
+            user_id = user.get('user_id')
 
-    #         routine = request.env['easy_gym.custom_routines'].sudo().browse(routine_id)
+            routine = request.env['easy_gym.custom_routines'].sudo().browse(routine_id)
 
-    #         if not routine.exists() or routine.user_id.id != user_id:
-    #             return _error_response("Routine not found or unauthorized", 400)
+            if not routine.exists() or routine.user_id.id != user_id:
+                return _error_response("Routine not found or unauthorized", 400)
 
-    #         routine.sudo().unlink()
+            routine.sudo().unlink()
 
-    #         return _success_response({'id': routine_id}, "Routine deleted successfully")
+            return _http_success_response({'id': routine_id}, "Routine deleted successfully")
 
-    #     except AccessDenied as e:
-    #         return _error_response(str(e), 401)
-    #     except Exception as e:
-    #         _logger.error(f"Error deleting routine: {str(e)}")
-    #         return _error_response("Internal Server Error", 500)
+        except AccessDenied as e:
+            return _http_error_response(str(e), 401)
+        except Exception as e:
+            _logger.error(f"Error deleting routine: {str(e)}")
+            return _http_error_response("Internal Server Error", 500)
+
+    @http.route('/api/easy_apps/gym/custom_routines_exercise/delete/<int:routine_exercise_id>', type='http', auth="none", methods=['DELETE'])
+    def delete_routine_exercise(self, routine_exercise_id, **kwargs):
+        """Delete a exercise on custom routine"""
+        try:
+            user = JWTAuth.authenticate_request()
+            user_id = user.get('user_id')
+
+            routine_exercise = request.env['easy_gym.routine_exercise'].sudo().browse(routine_exercise_id)
+
+            if not routine_exercise.exists() or routine_exercise.routine_id.user_id.id != user_id:
+                return _error_response("Routine not found or unauthorized", 400)
+
+            routine_exercise.sudo().unlink()
+
+            return _http_success_response({'id': routine_exercise_id}, "Routine exercise deleted successfully")
+
+        except AccessDenied as e:
+            return _http_error_response(str(e), 401)
+        except Exception as e:
+            _logger.error(f"Error deleting routine: {str(e)}")
+            return _http_error_response("Internal Server Error", 500)
