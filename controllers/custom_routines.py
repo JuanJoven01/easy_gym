@@ -116,7 +116,7 @@ class CustomRoutinesController(http.Controller):
             #  Validate if routine exists and belongs to the user
             routine_info = request.env['easy_gym.custom_routines'].sudo().search([('id', '=', routine_id)], limit=1)
             if not routine_info:
-                return _http_error_response('Routine does not exist', 404)
+                return _http_error_response('Routine does not exist', 400)
             if routine_info.user_id.id != user_id:
                 return _http_error_response('Routine does not belong to the user', 403)
 
@@ -141,33 +141,70 @@ class CustomRoutinesController(http.Controller):
             return _http_error_response("Internal Server Error", 500)
 
 
-    # @http.route('/api/easy_apps/gym/custom_routines/<int:routine_id>', type='jsonrpc', auth="none", methods=['PUT'])
-    # def update_custom_routine(self, routine_id, **kwargs):
-    #     """Update a custom routine"""
-    #     try:
-    #         user = JWTAuth.authenticate_request()
-    #         user_id = user.get('user_id')
+    @http.route('/api/easy_apps/gym/custom_routines/update', type='jsonrpc', auth="none", methods=['PUT'])
+    def update_custom_routine(self, **kwargs):
+        """Update a custom routine"""
+        try:
+            user = JWTAuth.authenticate_request()
+            user_id = user.get('user_id')
+            routine_id = kwargs.get('id')
+            routine = request.env['easy_gym.custom_routines'].sudo().browse(routine_id)
 
-    #         routine = request.env['easy_gym.custom_routines'].sudo().browse(routine_id)
+            if not routine.exists() or routine.user_id.id != user_id:
+                return _error_response("Routine not found or unauthorized", 400)
 
-    #         if not routine.exists() or routine.user_id.id != user_id:
-    #             return _error_response("Routine not found or unauthorized", 404)
+            update_data = {}
+            if 'name' in kwargs:
+                update_data['name'] = kwargs['name']
+            if 'routine_exercise_ids' in kwargs:
+                update_data['routine_exercise_ids'] = [(6, 0, kwargs['routine_exercise_ids'])] # receives the list complete of exercises, if no in this list will be removed.
 
-    #         update_data = {}
-    #         if 'name' in kwargs:
-    #             update_data['name'] = kwargs['name']
-    #         if 'routine_exercise_ids' in kwargs:
-    #             update_data['routine_exercise_ids'] = [(6, 0, kwargs['routine_exercise_ids'])]
+            routine.sudo().write(update_data)
 
-    #         routine.sudo().write(update_data)
+            return _success_response({'id': routine.id}, "Routine updated successfully")
 
-    #         return _success_response({'id': routine.id}, "Routine updated successfully")
+        except AccessDenied as e:
+            return _error_response(str(e), 401)
+        except Exception as e:
+            _logger.error(f"Error updating routine: {str(e)}")
+            return _error_response("Internal Server Error", 500)
 
-    #     except AccessDenied as e:
-    #         return _error_response(str(e), 401)
-    #     except Exception as e:
-    #         _logger.error(f"Error updating routine: {str(e)}")
-    #         return _error_response("Internal Server Error", 500)
+    http.route('/api/easy_apps/gym/custom_routines/update_exercises', type='jsonrpc', auth="none", methods=['PUT'])
+    def update_exercise_routine(self, **kwargs):
+        """Update a custom routine"""
+        try:
+            user = JWTAuth.authenticate_request()
+            user_id = user.get('user_id')
+            routine_id = kwargs.get('routine_id')
+            custom_exercise_id = kwargs.get('id')
+            routine = request.env['easy_gym.custom_routines'].sudo().browse(routine_id)
+            if not routine.exists():
+                return _error_response("Routine not found", 404)
+            if routine.user_id.id != user_id:
+                return _error_response("Unauthorized", 401)
+
+            custom_exercise= request.env['easy_gym.routine_exercise'].sudo().search([('id', '=', custom_exercise_id)], limit=1)
+            if not custom_exercise:
+                return _error_response('Cant find exercise on DB', 400)
+            update_data = {}
+            if 'exercise_id' in kwargs:
+                update_data['exercise_id'] = kwargs['exercise_id']
+            if 'custom_exercise_id' in kwargs:
+                update_data['custom_exercise_id'] = kwargs['custom_exercise_id']
+            if 'order' in kwargs:
+                update_data['order'] = kwargs['order']
+            if 'superserie_group' in kwargs:
+                update_data['superserie_group'] = kwargs['superserie_group']
+            
+            custom_exercise.sudo().write(update_data)
+
+            return _success_response({'id': routine.id}, "Routine updated successfully")
+
+        except AccessDenied as e:
+            return _error_response(str(e), 401)
+        except Exception as e:
+            _logger.error(f"Error updating routine: {str(e)}")
+            return _error_response("Internal Server Error", 500)
 
     # @http.route('/api/easy_apps/gym/custom_routines/<int:routine_id>', type='jsonrpc', auth="none", methods=['DELETE'])
     # def delete_custom_routine(self, routine_id, **kwargs):
@@ -179,7 +216,7 @@ class CustomRoutinesController(http.Controller):
     #         routine = request.env['easy_gym.custom_routines'].sudo().browse(routine_id)
 
     #         if not routine.exists() or routine.user_id.id != user_id:
-    #             return _error_response("Routine not found or unauthorized", 404)
+    #             return _error_response("Routine not found or unauthorized", 400)
 
     #         routine.sudo().unlink()
 
