@@ -54,7 +54,7 @@ class JWTAuth:
 
 
 class JWTAuthController(http.Controller):
-    @http.route('/api/easy_apps/gym/auth', type='jsonrpc', auth='public', methods=['POST'], csrf=False)
+    @http.route('/api/easy_apps/gym/auth', type='json', auth='public', methods=['POST'], csrf=False)
     def login(self, **kwargs):
         """
         Authenticate user and return JWT token.

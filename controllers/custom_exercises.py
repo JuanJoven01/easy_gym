@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class CustomExercisesController(http.Controller):
 
-    @http.route('/api/easy_apps/gym/custom_exercises', type='jsonrpc', auth="none", methods=['POST'])
+    @http.route('/api/easy_apps/gym/custom_exercises', type='json', auth="none", methods=['POST'])
     def create_custom_exercise(self, **kwargs):
         """Create a new custom exercise for the authenticated user"""
         try:
@@ -97,7 +97,7 @@ class CustomExercisesController(http.Controller):
             return _http_error_response("Internal Server Error", 500)
 
 
-    @http.route('/api/easy_apps/gym/custom_exercises/<int:exercise_id>', type='jsonrpc', auth="none", methods=['PUT'])
+    @http.route('/api/easy_apps/gym/custom_exercises/<int:exercise_id>', type='json', auth="none", methods=['PUT'])
     def update_custom_exercise(self, exercise_id, **kwargs):
         """Update a custom exercise by ID for the authenticated user"""
         try:
@@ -127,7 +127,7 @@ class CustomExercisesController(http.Controller):
             _logger.error(f"Error updating custom exercise: {str(e)}")
             return _error_response("Internal Server Error", 500)
 
-    @http.route('/api/easy_apps/gym/custom_exercises/<int:exercise_id>', type='jsonrpc', auth="none", methods=['DELETE'])
+    @http.route('/api/easy_apps/gym/custom_exercises/<int:exercise_id>', type='json', auth="none", methods=['DELETE'])
     def delete_custom_exercise(self, exercise_id, **kwargs):
         """Delete a custom exercise by ID for the authenticated user"""
         try:

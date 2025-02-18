@@ -8,7 +8,7 @@ from ._helpers import _success_response, _error_response, _http_error_response, 
 _logger = logging.getLogger(__name__)
 
 class CustomRoutinesController(http.Controller):
-    @http.route('/api/easy_apps/gym/custom_routines/new', type='jsonrpc', auth="none", methods=['POST'])
+    @http.route('/api/easy_apps/gym/custom_routines/new', type='json', auth="none", methods=['POST'])
     def create_custom_routine(self, **kwargs):
         """Create a new custom routine for the authenticated user without exercises"""
         try:
@@ -33,7 +33,7 @@ class CustomRoutinesController(http.Controller):
             _logger.error(f"Error creating custom routine: {str(e)}")
             return _error_response("Internal Server Error", 500)
 
-    @http.route('/api/easy_apps/gym/custom_routines/add_exercises', type='jsonrpc', auth="none", methods=['POST'])
+    @http.route('/api/easy_apps/gym/custom_routines/add_exercises', type='json', auth="none", methods=['POST'])
     def add_exercises_to_routine(self, **kwargs):
         """Add exercises to an existing custom routine"""
         try:
@@ -141,7 +141,7 @@ class CustomRoutinesController(http.Controller):
             return _http_error_response("Internal Server Error", 500)
 
 
-    @http.route('/api/easy_apps/gym/custom_routines/update', type='jsonrpc', auth="none", methods=['PUT'])
+    @http.route('/api/easy_apps/gym/custom_routines/update', type='json', auth="none", methods=['PUT'])
     def update_custom_routine(self, **kwargs):
         """Update a custom routine"""
         try:
@@ -169,7 +169,7 @@ class CustomRoutinesController(http.Controller):
             _logger.error(f"Error updating routine: {str(e)}")
             return _error_response("Internal Server Error", 500)
 
-    http.route('/api/easy_apps/gym/custom_routines/update_exercises', type='jsonrpc', auth="none", methods=['PUT'])
+    http.route('/api/easy_apps/gym/custom_routines/update_exercises', type='json', auth="none", methods=['PUT'])
     def update_exercise_routine(self, **kwargs):
         """Update a custom routine"""
         try:
